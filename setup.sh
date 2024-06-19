@@ -4,7 +4,7 @@
 REPO_URL=https://github.com/v15hv4/init
 
 # directory to clone this repo into
-INIT_DIR=$HOME/init
+INIT_DIR=$HOME/dotfiles
 
 # packages to install
 PACKAGES=(
@@ -24,7 +24,6 @@ PACKAGES=(
   unzip
   upower
   polkit
-  lightdm
   ripgrep
   os-prober
   playerctl
@@ -41,7 +40,6 @@ PACKAGES=(
   arandr
   polybar
   autorandr
-  i3lock-color
   lxappearance-gtk3
   qt5-svg
   qt5-base
@@ -133,6 +131,10 @@ for filename in $(ls -A $INIT_DIR | grep -v -E ".git|.config|setup.sh"); do
   [ -e ~/$filename ] && mv ~/$filename ~/$filename.old
   ln -s $(realpath $filename) ~
 done
+
+# stuff and things
+ln -s /tmp ~/tmp
+sudo mkdir /mnt/ext
 
 # setup git
 git config --global user.name "v15hv4"
