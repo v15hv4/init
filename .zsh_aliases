@@ -1,0 +1,22 @@
+# cli tools
+alias ls="exa"
+alias cat="bat --theme gruvbox-light"
+alias df="duf"
+
+# short commands
+alias dc="docker-compose"
+alias xo="xdg-open"
+alias rs="rsync -avzWP"
+
+# execute in docker
+alias latexmk="docker run --rm -it -v $(pwd):/workdir danteev/texlive latexmk"
+
+# set wallpaper
+setwall() {
+  CURRENT_WALL=$HOME/Pictures/.current
+
+  rm $CURRENT_WALL ${CURRENT_WALL}-blur
+  ln -s $(realpath $1) $CURRENT_WALL
+  convert -blur 0x10 $CURRENT_WALL ${CURRENT_WALL}-blur
+  feh --no-fehbg --bg-scale $CURRENT_WALL
+}
