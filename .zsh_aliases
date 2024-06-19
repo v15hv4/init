@@ -1,7 +1,8 @@
 # cli tools
-alias ls="exa"
+alias ls="eza"
 alias cat="bat --theme gruvbox-light"
 alias df="duf"
+alias fehsd="feh --scale-down"
 
 # short commands
 alias dc="docker-compose"
