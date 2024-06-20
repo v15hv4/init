@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
 
-# config {{{
-# path to this repo
+# this repo
 REPO_URL=https://github.com/v15hv4/init
+
+# init profile config
+INIT_PROFILE_BRANCH=cos-personal
+INIT_PROFILE_DIR=$HOME/.init-profile
 
 # dotfiles config
 DOTFILES_BRANCH=dotfiles
-DOTFILES_DIR=$HOME/dotfiles
+DOTFILES_DIR=$HOME/.dotfiles
 
-# git config
-GIT_USERNAME=v15hv4
-GIT_EMAIL=vishva2912@gmail.com
-
-# packages to install
+# packages {{{
 PACKAGES=(
   # system
   jq
@@ -101,77 +100,108 @@ PACKAGES=(
   zathura
   google-chrome
   telegram-desktop-bin
+
+  # virtualization
+  podman
+  podman-compose
+  podman-docker
+  vagrant libvirt
+  qemu-full 
 )
 # }}}
 
-main() {
-  # install yay
+# helpers {{{
+install_yay() {
   echo "installing yay..."
   sudo pacman -Syu yay --noconfirm
 
-  # update yay
   echo "updating yay..."
   yay -Syu --noconfirm
+}
 
-  # install packages
+install_packages() {
   echo "installing packages..."
   yay -S ${PACKAGES[@]} --noconfirm
+}
 
-  # zsh plugins
+install_zsh_plugins() {
   echo "installing zsh plugins..."
-  ## oh-my-zsh
+  # oh-my-zsh
   sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-  ## zsh-autosuggestions
+  # zsh-autosuggestions
   git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-  ## powerlevel10k
+  # powerlevel10k
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-  ## autoenv
+  # autoenv
   git clone --depth=1 https://github.com/zpm-zsh/autoenv ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autoenv
+}
 
-  # clone repo
-  echo "cloning repo..."
-  [ -e $DOTFILES_DIR ] && mv $DOTFILES_DIR $DOTFILES_DIR.old
-  git clone $REPO_URL -b $DOTFILES_BRANCH $DOTFILES_DIR
-
+setup_dotfiles() {
   # link .configs
-  for filename in $(ls -A $DOTFILES_DIR/.config); do
+  for filename in $(ls -A $1/.config); do
     [ -e ~/.config/$filename ] && mv ~/.config/$filename ~/.config/$filename.old
-    ln -s $(realpath $DOTFILES_DIR/.config/$filename) ~/.config
+    ln -s $(realpath $1/.config/$filename) ~/.config
   done
 
   # link dotfiles
-  for filename in $(ls -A $DOTFILES_DIR | grep -v -E ".git|.config"); do
+  for filename in $(ls -A $1 | grep -v -E ".git|.config"); do
     [ -e ~/$filename ] && mv ~/$filename ~/$filename.old
-    ln -s $(realpath $DOTFILES_DIR/$filename) ~
+    ln -s $(realpath $1/$filename) ~
   done
+}
 
-  # misc stuff and things
+setup_filesystem() {
   ln -s /tmp ~/tmp
   sudo mkdir /mnt/ext
+}
+
+setup_systemctl() {
   sudo systemctl enable bluetooth
+  sudo systemctl enable libvirtd 
+  sudo systemctl enable nfs-server
+}
 
-  # nvidia
-  yay -S optimus-manager --noconfirm
-  sudo sed -i "s/^\(startup_mode=\).*/\1auto/g" /etc/optimus-manager/optimus-manager.conf # autodetect graphics on startup
-
-  # setup git
-  echo "setting up git..."
-  git config --global user.name $GIT_USERNAME
-  git config --global user.email $GIT_EMAIL
-
-  # setup virtualization
-  yay -Syu podman podman-compose podman-docker vagrant libvirt qemu-full --noconfirm
+setup_podman() {
   sudo touch /etc/containers/nodocker
   echo 'unqualified-search-registries = ["docker.io"]' | sudo tee -a /etc/containers/registries.conf
-  export VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1
-  sudo systemctl enable libvirtd nfs-server
-  vagrant plugin install vagrant-libvirt
+}
 
-  # clean up yay cache
+setup_vagrant() {
+  export VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1
+  vagrant plugin install vagrant-libvirt
+}
+
+setup_nvidia() {
+  yay -S optimus-manager --noconfirm
+  sudo sed -i "s/^\(startup_mode=\).*/\1auto/g" /etc/optimus-manager/optimus-manager.conf # autodetect graphics on startup
+}
+
+cleanup() {
   yay -R $(yay -Qtdq) --noconfirm
   yay -Scc --noconfirm
+}
+# }}}
 
-  echo "done!"
+main() {
+  install_yay
+  install_packages
+  install_zsh_plugins
+
+  setup_filesystem
+  setup_systemctl
+  setup_podman
+  setup_vagrant
+  setup_nvidia
+
+  [ -e $DOTFILES_DIR ] && rm -rf $DOTFILES_DIR.old && mv $DOTFILES_DIR $DOTFILES_DIR.old
+  git clone $REPO_URL -b $DOTFILES_BRANCH $DOTFILES_DIR
+  setup_dotfiles $DOTFILES_DIR
+
+  [ -e $INIT_PROFILE_DIR ] && rm -rf $INIT_PROFILE_DIR.old && mv $INIT_PROFILE_DIR $INIT_PROFILE_DIR.old
+  git clone $REPO_URL -b $INIT_PROFILE_BRANCH $INIT_PROFILE_DIR
+  setup_dotfiles $INIT_PROFILE_DIR/dotfiles
+
+  cleanup
 }
 
 main
