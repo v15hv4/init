@@ -152,6 +152,7 @@ git config --global user.email "vishva2912@gmail.com"
 # set up container runtime
 yay -Syu podman podman-compose podman-docker --noconfirm
 sudo touch /etc/containers/nodocker
+echo 'unqualified-search-registries = ["docker.io"]' | sudo tee -a /etc/containers/registries.conf
 
 # clean up yay cache
 yay -R $(yay -Qtdq) --noconfirm
