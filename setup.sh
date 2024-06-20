@@ -4,7 +4,7 @@
 REPO_URL=https://github.com/v15hv4/init
 
 # init profile config
-INIT_PROFILE_BRANCH=arch-new
+INIT_PROFILE_BRANCH=cos-personal
 INIT_PROFILE_DIR=$HOME/.init-profile
 
 # dotfiles config
@@ -16,6 +16,7 @@ PACKAGES=(
   # system
   jq
   git
+  vim
   feh
   zsh
   bat
@@ -144,7 +145,7 @@ setup_dotfiles() {
   done
 
   # link dotfiles
-  for filename in $(ls -A $1 | grep -v -E ".git|.config"); do
+  for filename in $(ls -A $1 | grep -v -E "^(.git|.config)$"); do
     [ -e ~/$filename ] && mv ~/$filename ~/$filename.old
     ln -s $(realpath $1/$filename) ~
   done

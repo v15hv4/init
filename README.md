@@ -1,5 +1,5 @@
 # init
 
 ```
-wget https://raw.githubusercontent.com/v15hv4/init/arch/setup.sh -O - | sh
+curl -fsSL https://raw.githubusercontent.com/v15hv4/init/cos-personal/setup.sh | sh
 ```
