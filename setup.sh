@@ -181,7 +181,8 @@ setup_vagrant() {
 }
 
 setup_nvidia() {
-  yay -S optimus-manager --noconfirm
+  yay -S optimus-manager glib glib2-devel gdm-prime --noconfirm
+  sudo sed -i "s/^#\(WaylandEnable=false\)/\1/g" /etc/gdm/custom.conf
   sudo sed -i "s/^\(startup_mode=\).*/\1auto/g" /etc/optimus-manager/optimus-manager.conf # autodetect graphics on startup
 }
 
