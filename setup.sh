@@ -4,7 +4,7 @@
 REPO_URL=https://github.com/v15hv4/init
 
 # init profile config
-INIT_PROFILE_BRANCH=cos-personal
+INIT_PROFILE_BRANCH=arch-new
 INIT_PROFILE_DIR=$HOME/.init-profile
 
 # dotfiles config
@@ -183,7 +183,6 @@ cleanup() {
 # }}}
 
 main() {
-  install_yay
   install_packages
   install_zsh_plugins
 
