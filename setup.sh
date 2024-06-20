@@ -34,7 +34,6 @@ PACKAGES=(
   upower
   polkit
   ripgrep
-  lightdm
   ntfs-3g
   os-prober
   playerctl
@@ -165,7 +164,6 @@ setup_filesystem() {
 }
 
 setup_systemctl() {
-  sudo systemctl enable lightdm
   sudo systemctl enable bluetooth
   sudo systemctl enable libvirtd 
   sudo systemctl enable nfs-server
