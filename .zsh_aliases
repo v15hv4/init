@@ -5,6 +5,7 @@ alias df="duf"
 alias fehsd="feh --scale-down"
 
 # short commands
+alias v="vagrant"
 alias dc="docker-compose"
 alias xo="xdg-open"
 alias rs="rsync -avzWP"

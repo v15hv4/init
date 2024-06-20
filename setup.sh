@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
-# this repo
+# config {{{
+# path to this repo
 REPO_URL=https://github.com/v15hv4/init
 
-# directory to clone this repo into
-INIT_DIR=$HOME/init
+# dotfiles config
+DOTFILES_BRANCH=dotfiles
+DOTFILES_DIR=$HOME/dotfiles
+
+# git config
+GIT_USERNAME=v15hv4
+GIT_EMAIL=vishva2912@gmail.com
 
 # packages to install
 PACKAGES=(
@@ -33,6 +39,7 @@ PACKAGES=(
   os-prober
   playerctl
   flameshot
+  base-devel
   efibootmgr
   polkit-gnome
 
@@ -95,67 +102,76 @@ PACKAGES=(
   google-chrome
   telegram-desktop-bin
 )
+# }}}
 
-# install yay
-echo "installing yay..."
-sudo pacman -Syu yay --noconfirm
+main() {
+  # install yay
+  echo "installing yay..."
+  sudo pacman -Syu yay --noconfirm
 
-# update yay
-echo "updating yay..."
-yay -Syu --noconfirm
+  # update yay
+  echo "updating yay..."
+  yay -Syu --noconfirm
 
-# install packages
-echo "installing packages..."
-yay -S ${PACKAGES[@]} --noconfirm
+  # install packages
+  echo "installing packages..."
+  yay -S ${PACKAGES[@]} --noconfirm
 
-# zsh plugins
-echo "installing zsh plugins..."
-## oh-my-zsh
-sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-## zsh-autosuggestions
-git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-## powerlevel10k
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-## autoenv
-git clone --depth=1 https://github.com/zpm-zsh/autoenv ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autoenv
+  # zsh plugins
+  echo "installing zsh plugins..."
+  ## oh-my-zsh
+  sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  ## zsh-autosuggestions
+  git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+  ## powerlevel10k
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+  ## autoenv
+  git clone --depth=1 https://github.com/zpm-zsh/autoenv ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autoenv
 
-# clone repo
-echo "cloning repo..."
-[ ! -e $INIT_DIR ] && git clone $REPO_URL $INIT_DIR
+  # clone repo
+  echo "cloning repo..."
+  [ -e $DOTFILES_DIR ] && mv $DOTFILES_DIR $DOTFILES_DIR.old
+  git clone $REPO_URL -b $DOTFILES_BRANCH $DOTFILES_DIR
 
-# link .configs
-for filename in $(ls -A $INIT_DIR/.config); do
-  [ -e ~/.config/$filename ] && mv ~/.config/$filename ~/.config/$filename.old
-  ln -s $(realpath $INIT_DIR/.config/$filename) ~/.config
-done
+  # link .configs
+  for filename in $(ls -A $DOTFILES_DIR/.config); do
+    [ -e ~/.config/$filename ] && mv ~/.config/$filename ~/.config/$filename.old
+    ln -s $(realpath $DOTFILES_DIR/.config/$filename) ~/.config
+  done
 
-# link dotfiles
-for filename in $(ls -A $INIT_DIR | grep -v -E ".git|.config|setup.sh"); do
-  [ -e ~/$filename ] && mv ~/$filename ~/$filename.old
-  ln -s $(realpath $INIT_DIR/$filename) ~
-done
+  # link dotfiles
+  for filename in $(ls -A $DOTFILES_DIR | grep -v -E ".git|.config"); do
+    [ -e ~/$filename ] && mv ~/$filename ~/$filename.old
+    ln -s $(realpath $DOTFILES_DIR/$filename) ~
+  done
 
-# stuff and things
-ln -s /tmp ~/tmp
-sudo mkdir /mnt/ext
-sudo systemctl enable bluetooth
+  # misc stuff and things
+  ln -s /tmp ~/tmp
+  sudo mkdir /mnt/ext
+  sudo systemctl enable bluetooth
 
-# nvidia
-yay -S optimus-manager --noconfirm
-sudo sed -i "s/^\(startup_mode=\).*/\1auto/g" /etc/optimus-manager/optimus-manager.conf # autodetect graphics on startup
+  # nvidia
+  yay -S optimus-manager --noconfirm
+  sudo sed -i "s/^\(startup_mode=\).*/\1auto/g" /etc/optimus-manager/optimus-manager.conf # autodetect graphics on startup
 
-# setup git
-echo "setting up git..."
-git config --global user.name "v15hv4"
-git config --global user.email "vishva2912@gmail.com"
+  # setup git
+  echo "setting up git..."
+  git config --global user.name $GIT_USERNAME
+  git config --global user.email $GIT_EMAIL
 
-# set up container runtime
-yay -Syu podman podman-compose podman-docker --noconfirm
-sudo touch /etc/containers/nodocker
-echo 'unqualified-search-registries = ["docker.io"]' | sudo tee -a /etc/containers/registries.conf
+  # setup virtualization
+  yay -Syu podman podman-compose podman-docker vagrant libvirt qemu-full --noconfirm
+  sudo touch /etc/containers/nodocker
+  echo 'unqualified-search-registries = ["docker.io"]' | sudo tee -a /etc/containers/registries.conf
+  export VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1
+  sudo systemctl enable libvirtd nfs-server
+  vagrant plugin install vagrant-libvirt
 
-# clean up yay cache
-yay -R $(yay -Qtdq) --noconfirm
-yay -Scc --noconfirm
+  # clean up yay cache
+  yay -R $(yay -Qtdq) --noconfirm
+  yay -Scc --noconfirm
 
-echo "done!"
+  echo "done!"
+}
+
+main
