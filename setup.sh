@@ -51,6 +51,7 @@ PACKAGES=(
   arandr
   polybar
   autorandr
+  i3lock-color
   xorg-xsetroot
   lxappearance-gtk3
 
@@ -130,6 +131,11 @@ install_packages() {
   yay -S ${PACKAGES[@]} --noconfirm
 }
 
+uninstall_packages() {
+  echo "uninstalling unnecessary packages..."
+  yay -R alacritty kvantum cachy-browser cachyos-hello btop eog fish --noconfirm 
+}
+
 install_zsh_plugins() {
   echo "installing zsh plugins..."
   # oh-my-zsh
@@ -158,6 +164,13 @@ setup_dotfiles() {
   done
 }
 
+setup_gtk() {
+  gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
+  gsettings set org.gnome.desktop.interface icon-theme 'Adwaita' 
+  gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors'
+  gsettings set org.gnome.desktop.interface font-name 'SF Pro Text 10'
+}
+
 setup_filesystem() {
   ln -s /tmp ~/tmp
   sudo mkdir /mnt/ext
@@ -181,8 +194,10 @@ setup_vagrant() {
 }
 
 setup_nvidia() {
-  yay -S optimus-manager glib glib2-devel gdm-prime --noconfirm
+  yay -S optimus-manager glib glib2-devel --noconfirm
+  yes | yay -S gdm-prime
   sudo sed -i "s/^#\(WaylandEnable=false\)/\1/g" /etc/gdm/custom.conf
+  sudo cp /usr/share/optimus-manager.conf /etc/optimus-manager/optimus-manager.conf
   sudo sed -i "s/^\(startup_mode=\).*/\1auto/g" /etc/optimus-manager/optimus-manager.conf # autodetect graphics on startup
 }
 
