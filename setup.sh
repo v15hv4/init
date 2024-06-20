@@ -42,6 +42,7 @@ PACKAGES=(
   base-devel
   efibootmgr
   polkit-gnome
+  inotify-tools
 
   # de/wm
   rofi
@@ -57,11 +58,11 @@ PACKAGES=(
   # audio
   alsa-lib                                                                                                 
   alsa-utils
-  alsa-plugins                                                                                             
-  alsa-ucm-conf                                                                                            
-  alsa-firmware                                                                                            
-  alsa-card-profiles                                                                                       
-  alsa-topology-conf                                                                                       
+  alsa-plugins
+  alsa-ucm-conf
+  alsa-firmware
+  alsa-card-profiles
+  alsa-topology-conf
   pamixer
   pavucontrol
   pipewire
@@ -108,6 +109,11 @@ PACKAGES=(
   podman-docker
   vagrant libvirt
   qemu-full 
+
+  # snapshots
+  grub-btrfs
+  timeshift
+  timeshift-autosnap
 )
 # }}}
 
@@ -160,6 +166,7 @@ setup_systemctl() {
   sudo systemctl enable bluetooth
   sudo systemctl enable libvirtd 
   sudo systemctl enable nfs-server
+  sudo systemctl enable grub-btrfsd
 }
 
 setup_podman() {
@@ -175,6 +182,10 @@ setup_vagrant() {
 setup_nvidia() {
   yay -S optimus-manager --noconfirm
   sudo sed -i "s/^\(startup_mode=\).*/\1auto/g" /etc/optimus-manager/optimus-manager.conf # autodetect graphics on startup
+}
+
+setup_snapshots() {
+  sed "s:\(grub-btrfsd --syslog\) /.snapshots:\1 -t:g" /etc/systemd/system/grub-btrfsd.service
 }
 
 cleanup() {
