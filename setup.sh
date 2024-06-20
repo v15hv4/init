@@ -145,10 +145,12 @@ install_zsh_plugins() {
 
 setup_dotfiles() {
   # link .configs
-  for filename in $(ls -A $1/.config); do
-    [ -e ~/.config/$filename ] && mv ~/.config/$filename ~/.config/$filename.old
-    ln -s $(realpath $1/.config/$filename) ~/.config
-  done
+  if [ -e $1/.config ]; then
+    for filename in $(ls -A $1/.config); do
+      [ -e ~/.config/$filename ] && mv ~/.config/$filename ~/.config/$filename.old
+      ln -s $(realpath $1/.config/$filename) ~/.config
+    done
+  fi
 
   # link dotfiles
   for filename in $(ls -A $1 | grep -v -E "^(.git|.config)$"); do
@@ -163,6 +165,7 @@ setup_filesystem() {
 }
 
 setup_systemctl() {
+  sudo systemctl enable lightdm
   sudo systemctl enable bluetooth
   sudo systemctl enable libvirtd 
   sudo systemctl enable nfs-server
@@ -195,6 +198,7 @@ cleanup() {
 # }}}
 
 main() {
+  install_yay
   install_packages
   install_zsh_plugins
 
@@ -213,6 +217,7 @@ main() {
   setup_dotfiles $INIT_PROFILE_DIR/dotfiles
 
   cleanup
+  reboot
 }
 
 main
