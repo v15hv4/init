@@ -1,5 +1,6 @@
 # cli tools
 alias ls="eza"
+alias vim="nvim"
 alias cat="bat --theme gruvbox-light"
 alias df="duf"
 alias fehsd="feh --scale-down"
