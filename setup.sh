@@ -99,9 +99,10 @@ PACKAGES=(
   rustup
 
   # apps
-  zathura
   google-chrome
   telegram-desktop-bin
+  zathura
+  zathura-pdf-poppler
 
   # virtualization
   podman
