@@ -133,7 +133,7 @@ install_packages() {
 
 uninstall_packages() {
   echo "uninstalling unnecessary packages..."
-  yay -R alacritty kvantum cachy-browser cachyos-hello btop eog fish --noconfirm 
+  yay -R alacritty kvantum cachy-browser cachyos-hello btop eog fish cachyos-gnome-settings fisher fish-autopair fish-pure-prompt cachyos-fish-config kvantum-theme-libadwaita-git --noconfirm
 }
 
 install_zsh_plugins() {
