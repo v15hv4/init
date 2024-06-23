@@ -199,14 +199,6 @@ setup_vagrant() {
   vagrant plugin install vagrant-libvirt
 }
 
-setup_nvidia() {
-  yay -S optimus-manager glib glib2-devel --noconfirm
-  yes | yay -S gdm-prime
-  sudo sed -i "s/^#\(WaylandEnable=false\)/\1/g" /etc/gdm/custom.conf
-  sudo cp /usr/share/optimus-manager.conf /etc/optimus-manager/optimus-manager.conf
-  sudo sed -i "s/^\(startup_mode=\).*/\1auto/g" /etc/optimus-manager/optimus-manager.conf # autodetect graphics on startup
-}
-
 setup_snapshots() {
   sed "s:\(grub-btrfsd --syslog\) /.snapshots:\1 -t:g" /etc/systemd/system/grub-btrfsd.service
 }
@@ -226,7 +218,6 @@ main() {
   setup_systemctl
   setup_podman
   setup_vagrant
-  setup_nvidia
 
   [ -e $DOTFILES_DIR ] && rm -rf $DOTFILES_DIR.old && mv $DOTFILES_DIR $DOTFILES_DIR.old
   git clone $REPO_URL -b $DOTFILES_BRANCH $DOTFILES_DIR
