@@ -4,7 +4,7 @@
 REPO_URL=https://github.com/v15hv4/init
 
 # init profile config
-INIT_PROFILE_BRANCH=cos-personal
+INIT_PROFILE_BRANCH=cos-work
 INIT_PROFILE_DIR=$HOME/.init-profile
 
 # dotfiles config
@@ -103,6 +103,11 @@ PACKAGES=(
   telegram-desktop-bin
   zathura
   zathura-pdf-poppler
+  slack-desktop
+  ansible
+  tailscale
+  magic-wormhole
+
 
   # virtualization
   podman
