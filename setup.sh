@@ -41,6 +41,7 @@ PACKAGES=(
   base-devel
   efibootmgr
   polkit-gnome
+  brightnessctl
   inotify-tools
 
   # de/wm
@@ -170,6 +171,10 @@ setup_dotfiles() {
   done
 }
 
+setup_user() {
+  sudo usermod -aG video $(whoami)
+}
+
 setup_gtk() {
   gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
   gsettings set org.gnome.desktop.interface icon-theme 'Adwaita' 
@@ -214,6 +219,8 @@ main() {
   install_packages
   install_zsh_plugins
 
+  setup_user
+  setup_gtk
   setup_filesystem
   setup_systemctl
   setup_podman
