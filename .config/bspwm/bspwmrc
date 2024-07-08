@@ -6,7 +6,6 @@ pgrep -x sxhkd > /dev/null || sxhkd &
 # polkit
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
-
 # config
 bspc monitor -d I II III IV V # VI VII VIII IX X
 
@@ -20,6 +19,8 @@ bspc config borderless_monocle   true
 bspc config gapless_monocle      true
 bspc config focus_follows_pointer true
 bspc config merge_overlapping_monitors true
+bspc config remove_disabled_monitors  true
+bspc config remove_unplugged_monitors true
 
 bspc rule -a feh state=floating
 bspc rule -a Zathura state=tiled
@@ -29,8 +30,11 @@ bspc rule -a blink state=floating border=off
 # startup applications
 autorandr -c &
 feh --no-fehbg --bg-scale ~/Pictures/.current
-polybar &
+killall polybar; polybar &
 dunst &
 dex -a -s /etc/xdg/autostart/:~/.config/autostart/  &
-picom -b &
+killall picom; picom -b &
 xsetroot -cursor_name left_ptr &
+
+# lock screen
+~/.config/i3lock/launch.sh

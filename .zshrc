@@ -6,7 +6,7 @@ fi
 # oh-my-zsh configuration
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
-plugins=(git zsh-autosuggestions autoenv docker docker-compose)
+plugins=(git zsh-autosuggestions autoenv docker docker-compose systemd)
 source $ZSH/oh-my-zsh.sh
 
 # preferred editor for local and remote sessions
@@ -27,3 +27,6 @@ setopt nonomatch
 
 # local binaries
 export PATH=$PATH:$HOME/.local/bin
+
+# xssh completions
+compdef _ssh xssh=ssh
