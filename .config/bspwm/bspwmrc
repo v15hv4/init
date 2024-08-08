@@ -29,12 +29,12 @@ bspc rule -a blink state=floating border=off
 
 # startup applications
 autorandr -c &
-feh --no-fehbg --bg-scale ~/Pictures/.current
 killall polybar; polybar &
 dunst &
 dex -a -s /etc/xdg/autostart/:~/.config/autostart/  &
 killall picom; picom -b &
 xsetroot -cursor_name left_ptr &
+feh --no-fehbg --bg-scale ~/Pictures/.current
 
 # lock screen
 ~/.config/i3lock/launch.sh
