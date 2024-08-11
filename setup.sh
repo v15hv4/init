@@ -110,7 +110,9 @@ install_localpackages() {
   # slack-desktop
   wget https://pclinuxos.pkgs.org/rolling/pclinuxos-x86_64/slack-desktop-4.36.140-1pclos2024.x86_64.rpm.html -O /tmp/localpackages/slack-desktop.rpm
   # magic-wormhole
-  wget https://altlinux.pkgs.org/p11/classic-noarch/magic-wormhole-0.13.0-alt2.noarch.rpm.html -O /tmp/localpackages/magic-wormhole
+  wget https://altlinux.pkgs.org/p11/classic-noarch/magic-wormhole-0.13.0-alt2.noarch.rpm.html -O /tmp/localpackages/magic-wormhole.rpm
+  # capitaine-cursors
+  wget https://rpmfind.net/linux/fedora/linux/releases/39/Everything/aarch64/os/Packages/l/la-capitaine-cursor-theme-4-5.20210303git06c8843.fc39.noarch.rpm -O /tmp/localpackages/capitaine-cursors.rpm
 
   dnf localinstall -y /tmp/localpackages/*
 }
@@ -170,7 +172,7 @@ setup_systemctl() {
   sudo systemctl enable bluetooth
   sudo systemctl enable libvirtd 
   sudo systemctl enable nfs-server
-  sudo systemctl enable grub-btrfsd
+  # sudo systemctl enable grub-btrfsd
 }
 
 setup_podman() {
@@ -183,9 +185,9 @@ setup_vagrant() {
   vagrant plugin install vagrant-libvirt
 }
 
-setup_snapshots() {
-  sed "s:\(grub-btrfsd --syslog\) /.snapshots:\1 -t:g" /etc/systemd/system/grub-btrfsd.service
-}
+# setup_snapshots() {
+#   sed "s:\(grub-btrfsd --syslog\) /.snapshots:\1 -t:g" /etc/systemd/system/grub-btrfsd.service
+# }
 
 cleanup() {
   dnf clean all
