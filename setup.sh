@@ -106,11 +106,9 @@ install_localpackages() {
   # i3lock-color
   wget https://download.copr.fedorainfracloud.org/results/rubemlrm/i3lock-color/fedora-40-x86_64/07280720-i3lock-color/i3lock-color-2.13.c.5-1.fc40.x86_64.rpm -O /tmp/localpackages/i3lock-color.rpm
   # telegram-desktop
-  wget https://rpmfind.net/linux/openmandriva/cooker/repository/x86_64/main/release/telegram-desktop-5.3.2-1-omv2490.x86_64.rpm -O /tmp/localpackages/telegram-desktop.rpm
+  wget https://download1.rpmfusion.org/free/fedora/updates/40/x86_64/t/telegram-desktop-5.2.3-1.fc40.x86_64.rpm -O /tmp/localpackages/telegram-desktop.rpm
   # slack-desktop
-  wget https://pclinuxos.pkgs.org/rolling/pclinuxos-x86_64/slack-desktop-4.36.140-1pclos2024.x86_64.rpm.html -O /tmp/localpackages/slack-desktop.rpm
-  # magic-wormhole
-  wget https://altlinux.pkgs.org/p11/classic-noarch/magic-wormhole-0.13.0-alt2.noarch.rpm.html -O /tmp/localpackages/magic-wormhole.rpm
+  wget https://ftp.nluug.nl/pub/os/Linux/distr/pclinuxos/pclinuxos/apt/pclinuxos/64bit/RPMS.x86_64/slack-desktop-4.36.140-1pclos2024.x86_64.rpm -O /tmp/localpackages/slack-desktop.rpm
   # capitaine-cursors
   wget https://rpmfind.net/linux/fedora/linux/releases/39/Everything/aarch64/os/Packages/l/la-capitaine-cursor-theme-4-5.20210303git06c8843.fc39.noarch.rpm -O /tmp/localpackages/capitaine-cursors.rpm
 
