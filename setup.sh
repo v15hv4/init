@@ -4,7 +4,7 @@
 REPO_URL=https://github.com/v15hv4/init
 
 # init profile config
-INIT_PROFILE_BRANCH=cos-work
+INIT_PROFILE_BRANCH=fedora-work
 INIT_PROFILE_DIR=$HOME/.init-profile
 
 # dotfiles config
@@ -20,7 +20,6 @@ PACKAGES=(
   feh
   zsh
   bat
-  dex
   eza
   tmux
   htop
@@ -38,7 +37,6 @@ PACKAGES=(
   os-prober
   playerctl
   flameshot
-  base-devel
   efibootmgr
   polkit-gnome
   brightnessctl
@@ -52,46 +50,23 @@ PACKAGES=(
   arandr
   polybar
   autorandr
-  i3lock-color
-  xorg-xsetroot
-  lxappearance-gtk3
 
   # audio
-  alsa-lib                                                                                                 
-  alsa-utils
-  alsa-plugins
-  alsa-ucm-conf
   alsa-firmware
-  alsa-card-profiles
-  alsa-topology-conf
   pamixer
   pavucontrol
   pipewire
   pipewire-alsa
-  pipewire-audio
-  pipewire-pulse
   wireplumber
 
   # bluetooth
   bluez
   bluez-libs
-  bluez-utils
   blueman
-
+  
   # editor
   neovim
   tree-sitter-cli
-
-  # fonts
-  noto-fonts
-  ttf-opensans
-  noto-fonts-cjk
-  otf-apple-fonts
-  noto-fonts-emoji
-  noto-fonts-extra
-  otf-geist-mono-nerd
-  awesome-terminal-fonts
-  ttf-material-design-icons-webfont
 
   # languages
   gcc
@@ -100,47 +75,51 @@ PACKAGES=(
   rustup
 
   # apps
-  google-chrome
-  telegram-desktop-bin
-  zathura
-  zathura-pdf-poppler
-  slack-desktop
   ansible
   tailscale
-  magic-wormhole
-
+  timeshift
+  zathura
+  zathura-pdf-poppler
 
   # virtualization
   podman
   podman-compose
   podman-docker
-  vagrant libvirt
-  qemu-full 
-
-  # snapshots
-  grub-btrfs
-  timeshift
-  timeshift-autosnap
+  vagrant-libvirt
 )
 # }}}
 
 # helpers {{{
-install_yay() {
-  echo "installing yay..."
-  sudo pacman -Syu yay --noconfirm
-
-  echo "updating yay..."
-  yay -Syu --noconfirm
-}
-
 install_packages() {
   echo "installing packages..."
-  yay -S ${PACKAGES[@]} --noconfirm
+
+  dnf install -y ${PACKAGES[@]}
 }
 
-uninstall_packages() {
-  echo "uninstalling unnecessary packages..."
-  yay -R alacritty kvantum cachy-browser cachyos-hello btop eog fish cachyos-gnome-settings fisher fish-autopair fish-pure-prompt cachyos-fish-config kvantum-theme-libadwaita-git --noconfirm
+install_localpackages() {
+  echo "installing local packages..."
+
+  mkdir -p /tmp/localpackages
+
+  # google chrome
+  wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm -O /tmp/localpackages/chrome.rpm
+  # i3lock-color
+  wget https://download.copr.fedorainfracloud.org/results/rubemlrm/i3lock-color/fedora-40-x86_64/07280720-i3lock-color/i3lock-color-2.13.c.5-1.fc40.x86_64.rpm -O /tmp/localpackages/i3lock-color.rpm
+  # telegram-desktop
+  wget https://rpmfind.net/linux/openmandriva/cooker/repository/x86_64/main/release/telegram-desktop-5.3.2-1-omv2490.x86_64.rpm -O /tmp/localpackages/telegram-desktop.rpm
+  # slack-desktop
+  wget https://pclinuxos.pkgs.org/rolling/pclinuxos-x86_64/slack-desktop-4.36.140-1pclos2024.x86_64.rpm.html -O /tmp/localpackages/slack-desktop.rpm
+  # magic-wormhole
+  wget https://altlinux.pkgs.org/p11/classic-noarch/magic-wormhole-0.13.0-alt2.noarch.rpm.html -O /tmp/localpackages/magic-wormhole
+
+  dnf localinstall -y /tmp/localpackages/*
+}
+
+install_fonts() {
+  echo "installing fonts..."
+
+  sudo cp -r $INIT_PROFILE_DIR/fonts/* /usr/share/fonts
+  sudo dnf install -y google-noto-* --allowerasing --skip-broken
 }
 
 install_zsh_plugins() {
@@ -209,15 +188,15 @@ setup_snapshots() {
 }
 
 cleanup() {
-  yay -R $(yay -Qtdq) --noconfirm
-  yay -Scc --noconfirm
+  dnf clean all
 }
 # }}}
 
 main() {
-  install_yay
   install_packages
+  install_localpackages
   install_zsh_plugins
+  install_fonts
 
   setup_user
   setup_gtk
@@ -235,7 +214,6 @@ main() {
   setup_dotfiles $INIT_PROFILE_DIR/dotfiles
 
   cleanup
-  reboot
 }
 
 main
