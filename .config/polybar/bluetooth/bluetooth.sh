@@ -7,7 +7,7 @@ else
   then 
     echo "󰂯"
   else
-    echo "%{F#2193ff}󰂱"
+    echo "%{F#2193ff}󰂱 $(pactl list cards sinks | grep codec | sed 's/.*= "\(.*\)"/\1/' | tr '[:lower:]' '[:upper:]')"
   fi
 fi
 

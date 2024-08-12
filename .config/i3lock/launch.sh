@@ -10,6 +10,10 @@ TEXT='#ffffff'
 WRONG='#ff5555'
 VERIFYING='#414458'
 
+# pause notifs
+dunstctl set-paused true
+
+# launch lock screen
 i3lock -n -i $IMAGE -L -c $KEY \
     --insidever-color=$CLEAR \
     --ringver-color=$VERIFYING \
@@ -50,3 +54,6 @@ i3lock -n -i $IMAGE -L -c $KEY \
     --pass-volume-keys \
     --pass-screen-keys \
     --pass-power-keys \
+
+# resume notifs
+dunstctl set-paused false
