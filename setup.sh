@@ -4,7 +4,7 @@
 REPO_URL=https://github.com/v15hv4/init
 
 # init profile config
-INIT_PROFILE_BRANCH=cos-work
+INIT_PROFILE_BRANCH=eos-work
 INIT_PROFILE_DIR=$HOME/.init-profile
 
 # dotfiles config
@@ -20,7 +20,6 @@ PACKAGES=(
   feh
   zsh
   bat
-  dex
   eza
   tmux
   htop
@@ -30,53 +29,16 @@ PACKAGES=(
   rsync
   kitty
   unzip
-  picom
-  upower
-  polkit
   ripgrep
   ntfs-3g
   os-prober
-  playerctl
-  flameshot
   base-devel
   efibootmgr
-  polkit-gnome
   brightnessctl
   inotify-tools
 
   # de/wm
-  rofi
   bspwm
-  dunst
-  sxhkd
-  arandr
-  polybar
-  autorandr
-  i3lock-color
-  xorg-xsetroot
-  lxappearance-gtk3
-
-  # audio
-  alsa-lib                                                                                                 
-  alsa-utils
-  alsa-plugins
-  alsa-ucm-conf
-  alsa-firmware
-  alsa-card-profiles
-  alsa-topology-conf
-  pamixer
-  pavucontrol
-  pipewire
-  pipewire-alsa
-  pipewire-audio
-  pipewire-pulse
-  wireplumber
-
-  # bluetooth
-  bluez
-  bluez-libs
-  bluez-utils
-  blueman
 
   # editor
   neovim
@@ -109,7 +71,6 @@ PACKAGES=(
   tailscale
   magic-wormhole
 
-
   # virtualization
   podman
   podman-compose
@@ -136,11 +97,6 @@ install_yay() {
 install_packages() {
   echo "installing packages..."
   yay -S ${PACKAGES[@]} --noconfirm
-}
-
-uninstall_packages() {
-  echo "uninstalling unnecessary packages..."
-  yay -R alacritty kvantum cachy-browser cachyos-hello btop eog fish cachyos-gnome-settings fisher fish-autopair fish-pure-prompt cachyos-fish-config kvantum-theme-libadwaita-git --noconfirm
 }
 
 install_zsh_plugins() {
@@ -173,13 +129,6 @@ setup_dotfiles() {
 
 setup_user() {
   sudo usermod -aG video $(whoami)
-}
-
-setup_gtk() {
-  gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
-  gsettings set org.gnome.desktop.interface icon-theme 'Adwaita' 
-  gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors'
-  gsettings set org.gnome.desktop.interface font-name 'SF Pro Text 10'
 }
 
 setup_filesystem() {
@@ -220,14 +169,13 @@ main() {
   install_zsh_plugins
 
   setup_user
-  setup_gtk
   setup_filesystem
   setup_systemctl
   setup_podman
   setup_vagrant
 
   [ -e $DOTFILES_DIR ] && rm -rf $DOTFILES_DIR.old && mv $DOTFILES_DIR $DOTFILES_DIR.old
-  git clone $REPO_URL -b $DOTFILES_BRANCH $DOTFILES_DIR
+  git clone $REPO_URL --single-branch -b $DOTFILES_BRANCH $DOTFILES_DIR
   setup_dotfiles $DOTFILES_DIR
 
   [ -e $INIT_PROFILE_DIR ] && rm -rf $INIT_PROFILE_DIR.old && mv $INIT_PROFILE_DIR $INIT_PROFILE_DIR.old
@@ -235,7 +183,6 @@ main() {
   setup_dotfiles $INIT_PROFILE_DIR/dotfiles
 
   cleanup
-  reboot
 }
 
 main
