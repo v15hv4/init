@@ -4,7 +4,7 @@
 REPO_URL=https://github.com/v15hv4/init
 
 # init profile config
-INIT_PROFILE_BRANCH=eos-work
+INIT_PROFILE_BRANCH=ubu-work
 INIT_PROFILE_DIR=$HOME/.init-profile
 
 # dotfiles config
@@ -14,28 +14,18 @@ DOTFILES_DIR=$HOME/.dotfiles
 # packages {{{
 PACKAGES=(
   # system
-  jq
-  git
   vim
   feh
   zsh
+  curl
   bat
   eza
   tmux
   htop
-  curl
   make
-  wget
-  rsync
   kitty
-  unzip
   ripgrep
-  ntfs-3g
-  os-prober
-  base-devel
-  efibootmgr
-  brightnessctl
-  inotify-tools
+  ca-certificates
 
   # de/wm
   bspwm
@@ -44,59 +34,27 @@ PACKAGES=(
   neovim
   tree-sitter-cli
 
-  # fonts
-  noto-fonts
-  ttf-opensans
-  noto-fonts-cjk
-  otf-apple-fonts
-  noto-fonts-emoji
-  noto-fonts-extra
-  otf-geist-mono-nerd
-  awesome-terminal-fonts
-  ttf-material-design-icons-webfont
-
   # languages
   gcc
+  npm
   nodejs
-  python
   rustup
+  python3
+  python-is-python3
 
   # apps
-  google-chrome
-  telegram-desktop-bin
+  ansible
   zathura
   zathura-pdf-poppler
-  slack-desktop
-  ansible
-  tailscale
   magic-wormhole
-
-  # virtualization
-  podman
-  podman-compose
-  podman-docker
-  vagrant libvirt
-  qemu-full 
-
-  # snapshots
-  grub-btrfs
-  timeshift
-  timeshift-autosnap
 )
 # }}}
 
 # helpers {{{
-install_yay() {
-  echo "installing yay..."
-  sudo pacman -Syu yay --noconfirm
-
-  echo "updating yay..."
-  yay -Syu --noconfirm
-}
-
 install_packages() {
   echo "installing packages..."
-  yay -S ${PACKAGES[@]} --noconfirm
+  sudo apt update
+  sudo apt install ${PACKAGES[@]} -y
 }
 
 install_zsh_plugins() {
@@ -127,52 +85,36 @@ setup_dotfiles() {
   done
 }
 
-setup_user() {
-  sudo usermod -aG video $(whoami)
-}
-
 setup_filesystem() {
   ln -s /tmp ~/tmp
   sudo mkdir /mnt/ext
 }
 
-setup_systemctl() {
-  sudo systemctl enable bluetooth
-  sudo systemctl enable libvirtd 
-  sudo systemctl enable nfs-server
-  sudo systemctl enable grub-btrfsd
-}
-
-setup_podman() {
-  sudo touch /etc/containers/nodocker
-  echo 'unqualified-search-registries = ["docker.io"]' | sudo tee -a /etc/containers/registries.conf
-}
-
-setup_vagrant() {
-  export VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1
-  vagrant plugin install vagrant-libvirt
-}
-
-setup_snapshots() {
-  sed "s:\(grub-btrfsd --syslog\) /.snapshots:\1 -t:g" /etc/systemd/system/grub-btrfsd.service
+setup_docker() {
+  sudo install -m 0755 -d /etc/apt/keyrings
+  sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  sudo chmod a+r /etc/apt/keyrings/docker.asc
+  echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt update
+  sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  sudo usermod -aG docker $(whoami)
 }
 
 cleanup() {
-  yay -R $(yay -Qtdq) --noconfirm
-  yay -Scc --noconfirm
+  sudo apt clean
 }
 # }}}
 
 main() {
-  install_yay
   install_packages
   install_zsh_plugins
 
-  setup_user
   setup_filesystem
   setup_systemctl
-  setup_podman
-  setup_vagrant
+  setup_docker
 
   [ -e $DOTFILES_DIR ] && rm -rf $DOTFILES_DIR.old && mv $DOTFILES_DIR $DOTFILES_DIR.old
   git clone $REPO_URL --single-branch -b $DOTFILES_BRANCH $DOTFILES_DIR
