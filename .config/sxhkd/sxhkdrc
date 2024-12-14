@@ -8,7 +8,7 @@
 
 # program launcher
 {super,alt} + d
-    rofi -modi drun -show drun
+    krunner
 
 # make sxhkd reload its configuration files:
 {super,alt} + Escape
@@ -161,7 +161,7 @@ Print
 
 # lock screen using light-locker
 {super,alt} + l
-	~/.config/i3lock/launch.sh
+	loginctl lock-session
 
 # spotify
 XF86Audio{Play,Pause,Next,Prev}
