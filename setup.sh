@@ -70,6 +70,10 @@ install_zsh_plugins() {
 }
 
 setup_dotfiles() {
+  if [ ! -d $1 ]; then
+    return 0
+  fi
+
   # link .configs
   if [ -e $1/.config ]; then
     for filename in $(ls -A $1/.config); do
