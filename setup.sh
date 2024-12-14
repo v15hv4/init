@@ -107,6 +107,15 @@ setup_docker() {
   sudo usermod -aG docker $(whoami)
 }
 
+setup_fonts() {
+  wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/GeistMono.zip -o /tmp/geistmono.zip
+  mkdir /tmp/geistmono
+  unzip /tmp/geistmono.zip -d /tmp/geistmono
+  sudo mv /tmp/geistmono/GeistMonoNerdFont* /usr/local/share/fonts
+
+  fc-cache -f -v
+}
+
 cleanup() {
   sudo apt clean
 }
@@ -119,6 +128,7 @@ main() {
   setup_filesystem
   setup_systemctl
   setup_docker
+  setup_fonts
 
   [ -e $DOTFILES_DIR ] && rm -rf $DOTFILES_DIR.old && mv $DOTFILES_DIR $DOTFILES_DIR.old
   git clone $REPO_URL --single-branch -b $DOTFILES_BRANCH $DOTFILES_DIR
