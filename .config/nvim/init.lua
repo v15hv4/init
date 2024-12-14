@@ -63,13 +63,6 @@ require("packer").startup(function(use)
   use("jay-babu/mason-null-ls.nvim")
   use("nvim-treesitter/nvim-treesitter")
 
-  -- AI
-  use("zbirenbaum/copilot.lua")
-  use({
-    "gera2ld/ai.nvim",
-    requires = { "nvim-lua/plenary.nvim" },
-  })
-
   -- Statusline
   use({
     "nvim-lualine/lualine.nvim",
@@ -89,6 +82,7 @@ require("packer").startup(function(use)
   use("m4xshen/autoclose.nvim")      -- Automatically close brackets and quotes
   use("nvim-tree/nvim-web-devicons") -- Better icons
   use("norcalli/nvim-colorizer.lua") -- Colorize codes
+  use("nvimdev/indentmini.nvim")     -- Indent lines
 
   if is_bootstrap then
     require("packer").sync()
@@ -132,7 +126,7 @@ vim.g.loaded_netrwPlugin = 1
 vim.o.autoread = true
 
 -- Set highlight on search
-vim.o.hlsearch = false
+vim.o.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
@@ -186,6 +180,8 @@ require('onedark').setup {
   transparent = true,
 }
 require('onedark').load()
+vim.cmd.highlight('IndentLine guifg=#dedede')
+vim.cmd.highlight('IndentLineCurrent guifg=#cccccc')
 
 -- Fold on markers
 vim.o.foldmethod = "marker"
@@ -504,10 +500,7 @@ vim.keymap.set("n", "<C-_>", builtin.live_grep, {})
 -- Colorizer
 require("colorizer").setup()
 
--- AI
-local ai = require('ai')
-local ok, opts = pcall(vim.fn.json_decode, os.getenv('AI_NVIM_PROVIDER_CONFIG'))
-opts = ok and opts or {}
-ai.setup(opts)
+-- Indentation
+require("indentmini").setup()
 
 -- }}}
