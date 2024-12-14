@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # this repo
 REPO_URL=https://github.com/v15hv4/init
