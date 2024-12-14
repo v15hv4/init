@@ -123,7 +123,7 @@ setup_docker() {
 }
 
 setup_fonts() {
-  wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/GeistMono.zip -o /tmp/geistmono.zip
+  wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/GeistMono.zip -O /tmp/geistmono.zip
   mkdir /tmp/geistmono
   unzip /tmp/geistmono.zip -d /tmp/geistmono
   sudo mv /tmp/geistmono/GeistMonoNerdFont* /usr/local/share/fonts
