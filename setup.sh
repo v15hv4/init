@@ -40,43 +40,43 @@ PACKAGES=(
   flameshot
   base-devel
   efibootmgr
-  polkit-gnome
-  brightnessctl
-  inotify-tools
+  # polkit-gnome
+  # brightnessctl
+  # inotify-tools
 
   # de/wm
-  rofi
-  bspwm
-  dunst
-  sxhkd
-  arandr
-  polybar
-  autorandr
-  i3lock-color
-  xorg-xsetroot
-  lxappearance-gtk3
+  # rofi
+  # bspwm
+  # dunst
+  # sxhkd
+  # arandr
+  # polybar
+  # autorandr
+  # i3lock-color
+  # xorg-xsetroot
+  # lxappearance-gtk3
 
   # audio
-  alsa-lib                                                                                                 
-  alsa-utils
-  alsa-plugins
-  alsa-ucm-conf
-  alsa-firmware
-  alsa-card-profiles
-  alsa-topology-conf
-  pamixer
-  pavucontrol
-  pipewire
-  pipewire-alsa
-  pipewire-audio
-  pipewire-pulse
-  wireplumber
+  # alsa-lib                                                                                                 
+  # alsa-utils
+  # alsa-plugins
+  # alsa-ucm-conf
+  # alsa-firmware
+  # alsa-card-profiles
+  # alsa-topology-conf
+  # pamixer
+  # pavucontrol
+  # pipewire
+  # pipewire-alsa
+  # pipewire-audio
+  # pipewire-pulse
+  # wireplumber
 
   # bluetooth
-  bluez
-  bluez-libs
-  bluez-utils
-  blueman
+  # bluez
+  # bluez-libs
+  # bluez-utils
+  # blueman
 
   # editor
   neovim
@@ -97,25 +97,22 @@ PACKAGES=(
   gcc
   nodejs
   python
-  rustup
 
   # apps
   google-chrome
-  telegram-desktop-bin
   zathura
   zathura-pdf-poppler
   slack-desktop
   ansible
-  tailscale
   magic-wormhole
 
 
-  # virtualization
-  podman
-  podman-compose
-  podman-docker
-  vagrant libvirt
-  qemu-full 
+  # # virtualization
+  # podman
+  # podman-compose
+  # podman-docker
+  # vagrant libvirt
+  # qemu-full 
 
   # snapshots
   grub-btrfs
@@ -194,15 +191,15 @@ setup_systemctl() {
   sudo systemctl enable grub-btrfsd
 }
 
-setup_podman() {
-  sudo touch /etc/containers/nodocker
-  echo 'unqualified-search-registries = ["docker.io"]' | sudo tee -a /etc/containers/registries.conf
-}
+# setup_podman() {
+#   sudo touch /etc/containers/nodocker
+#   echo 'unqualified-search-registries = ["docker.io"]' | sudo tee -a /etc/containers/registries.conf
+# }
 
-setup_vagrant() {
-  export VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1
-  vagrant plugin install vagrant-libvirt
-}
+# setup_vagrant() {
+#   export VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1
+#   vagrant plugin install vagrant-libvirt
+# }
 
 setup_snapshots() {
   sed "s:\(grub-btrfsd --syslog\) /.snapshots:\1 -t:g" /etc/systemd/system/grub-btrfsd.service
@@ -223,8 +220,8 @@ main() {
   setup_gtk
   setup_filesystem
   setup_systemctl
-  setup_podman
-  setup_vagrant
+  # setup_podman
+  # setup_vagrant
 
   [ -e $DOTFILES_DIR ] && rm -rf $DOTFILES_DIR.old && mv $DOTFILES_DIR $DOTFILES_DIR.old
   git clone $REPO_URL -b $DOTFILES_BRANCH $DOTFILES_DIR
@@ -235,7 +232,6 @@ main() {
   setup_dotfiles $INIT_PROFILE_DIR/dotfiles
 
   cleanup
-  reboot
 }
 
 main
