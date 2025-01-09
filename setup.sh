@@ -61,6 +61,8 @@ PACKAGES=(
   gcc
   nodejs
   python
+  pyenv
+  pyenv-virtualenv
 
   # apps
   google-chrome
