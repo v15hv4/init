@@ -7,7 +7,7 @@ pgrep -x sxhkd > /dev/null || sxhkd &
 bspc monitor -d I II III IV V # VI VII VIII IX X
 
 bspc config window_gap           5
-bspc config border_width         2
+bspc config border_width         3
 bspc config focused_border_color '#121212'
 bspc config normal_border_color '#999999'
 bspc config top_padding 38
@@ -27,8 +27,8 @@ bspc rule -a blink state=floating border=off
 bspc rule -a krunner state=floating border=off
 bspc rule -a plasmashell state=floating border=off
 
-# startup applications
-killall picom; picom -b &
+bspc config external_rules_command ~/.config/bspwm/external_rules
 
-# lock screen
-xmodmap -e 'keycode 64 = Control_R'
+# startup applications
+# autorandr -c &
+killall picom; picom -b &

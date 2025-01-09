@@ -159,10 +159,6 @@ XF86Audio{Mute}
 Print
 	flameshot gui
 
-# lock screen using light-locker
-{super,alt} + l
-	loginctl lock-session
-
 # spotify
 XF86Audio{Play,Pause,Next,Prev}
     playerctl -p spotify {play-pause,play-pause,next,previous}
