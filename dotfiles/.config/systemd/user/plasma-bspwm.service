@@ -1,0 +1,10 @@
+[Unit]
+Description=Launch Plasma with bspwm
+Before=plasma-workspace.target
+
+[Service]
+ExecStart=/usr/bin/bspwm
+Restart=on-failure
+
+[Install]
+WantedBy=plasma-workspace.target

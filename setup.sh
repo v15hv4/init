@@ -135,6 +135,11 @@ setup_snapshots() {
   sed "s:\(grub-btrfsd --syslog\) /.snapshots:\1 -t:g" /etc/systemd/system/grub-btrfsd.service
 }
 
+setup_wm() {
+  systemctl --user mask plasma-kwin_x11.service
+  systemctl --user enable plasma-bspwm.service
+}
+
 cleanup() {
   yay -R $(yay -Qtdq) --noconfirm
   yay -Scc --noconfirm
@@ -156,6 +161,8 @@ main() {
   [ -e $INIT_PROFILE_DIR ] && rm -rf $INIT_PROFILE_DIR.old && mv $INIT_PROFILE_DIR $INIT_PROFILE_DIR.old
   git clone $REPO_URL -b $INIT_PROFILE_BRANCH $INIT_PROFILE_DIR
   setup_dotfiles $INIT_PROFILE_DIR/dotfiles
+
+  setup_wm
 
   cleanup
 }
